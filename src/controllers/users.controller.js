@@ -4,7 +4,13 @@ const userModel = require("../models/user.model");
 module.exports = {
   getUsers: async (req, res) => {
     try {
-      const result = await userModel.getUsers();
+      let { search, column, orderBy, limit } = req.query;
+
+      column = column || "id";
+      orderBy = orderBy || "ASC";
+      limit = +limit || 5;
+
+      const result = await userModel.getUsers(search, column, orderBy, limit);
 
       if (result.rows.length < 1) {
         return wrapper.response(res, 404, "Data Not Found", []);
