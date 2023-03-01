@@ -1,14 +1,14 @@
 require("dotenv").config();
 const express = require("express");
+const routerNavigation = require("./src/routers");
 
 const app = express();
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.SERVER_PORT || 8080;
 
-app.get("/", (req, res) => {
-  res.json({
-    message: "Welcome to Daily Drip API",
-  });
-});
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+
+app.use("/api", routerNavigation);
 
 app.listen(PORT, () => {
   console.log(`Server is running at port ${PORT}`);
