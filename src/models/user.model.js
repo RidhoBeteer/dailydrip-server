@@ -36,21 +36,33 @@ module.exports = {
     return new Promise((resolve, reject) => {
       const sql = "UPDATE users set ";
       const dataUpdate = [];
-      const columns = [];
+      const values = [];
 
       let i = 1;
       for (let props in data) {
         if (data[props] !== "" && data[props] != null) {
           dataUpdate.push(`${props} = $${i}`);
-          columns.push(data[props]);
+          values.push(data[props]);
           i += 1;
         }
       }
-      columns.push(id);
+      values.push(id);
       const sqlQuery =
         sql + dataUpdate.join(", ") + " WHERE id = $" + i + " RETURNING *";
 
-      db.query(sqlQuery, columns, (error, result) => {
+      db.query(sqlQuery, values, (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      });
+    });
+  },
+  updateUserPassword: (id, newPwd) => {
+    return new Promise((resolve, reject) => {
+      const sql =
+        "UPDATE users SET password = $1 WHERE id = $2 RETURNING id, email";
+      const values = [newPwd, id];
+
+      db.query(sql, values, (error, result) => {
         if (error) return reject(error);
         resolve(result);
       });

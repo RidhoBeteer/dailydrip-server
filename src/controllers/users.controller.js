@@ -52,7 +52,12 @@ module.exports = {
         phone === "" ||
         phone === undefined
       ) {
-        return wrapper.response(res, 400, "All Inputs should be filled", []);
+        return wrapper.response(
+          res,
+          400,
+          "All Input fields should be filled",
+          []
+        );
       }
 
       const result = await userModel.createUser(email, password, phone);
@@ -65,7 +70,6 @@ module.exports = {
   updateUserData: async (req, res) => {
     try {
       const { id } = req.params;
-      const updateObj = { ...req.body };
 
       const checkId = await userModel.getUser(id);
 
@@ -73,10 +77,12 @@ module.exports = {
         return wrapper.response(
           res,
           400,
-          "User with provided ID is not exists",
+          "User with provided ID does not exist",
           []
         );
       }
+
+      const updateObj = { ...req.body };
 
       if (Object.keys(updateObj).length < 1) {
         return wrapper.response(
@@ -101,6 +107,64 @@ module.exports = {
   },
   updateUserPassword: async (req, res) => {
     try {
+      const { id } = req.params;
+
+      const checkId = await userModel.getUser(id);
+
+      if (checkId.rows.length < 1) {
+        return wrapper.response(
+          res,
+          400,
+          "User with provided ID does not exist",
+          []
+        );
+      }
+
+      const { oldPassword, newPassword, confirmNewPassword } = req.body;
+      const isFilled = [
+        oldPassword || null,
+        newPassword || null,
+        confirmNewPassword || null,
+      ];
+      const isValidInput = isFilled.every((el) => el !== null);
+
+      if (!isValidInput) {
+        return wrapper.response(
+          res,
+          400,
+          "All Input fields should be filled",
+          []
+        );
+      }
+
+      const checkOldPassword = await userModel.getUser(id);
+
+      if (oldPassword !== checkOldPassword.rows[0].password) {
+        return wrapper.response(
+          res,
+          403,
+          "The password provided doesn't match the one stored in the database",
+          []
+        );
+      }
+
+      if (newPassword !== confirmNewPassword) {
+        return wrapper.response(
+          res,
+          400,
+          "New Password and Confirm Password doesn't match",
+          []
+        );
+      }
+
+      const result = await userModel.updateUserPassword(id, newPassword);
+
+      return wrapper.response(
+        res,
+        200,
+        "Success Updating Password",
+        result.rows
+      );
     } catch (error) {
       return wrapper.response(res, 500, "Internal Server Error", null);
     }
