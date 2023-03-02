@@ -62,4 +62,30 @@ module.exports = {
       return wrapper.response(res, 500, "Internal Server Error", null);
     }
   },
+  updateUserData: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const updateObj = { ...req.body };
+
+      if (Object.keys(updateObj).length < 1) {
+        return wrapper.response(
+          res,
+          400,
+          "Provide at least one data to update",
+          []
+        );
+      }
+
+      const result = await userModel.updateUserData(id, updateObj);
+
+      return wrapper.response(
+        res,
+        200,
+        "Success Updating User Data",
+        result.rows
+      );
+    } catch (error) {
+      return wrapper.response(res, 500, "Internal Server Error", null);
+    }
+  },
 };

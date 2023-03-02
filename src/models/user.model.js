@@ -32,4 +32,28 @@ module.exports = {
       });
     });
   },
+  updateUserData: (id, data) => {
+    return new Promise((resolve, reject) => {
+      const sql = "UPDATE users set ";
+      const dataUpdate = [];
+      const columns = [];
+
+      let i = 1;
+      for (let props in data) {
+        if (data[props] !== "" && data[props] != null) {
+          dataUpdate.push(`${props} = $${i}`);
+          columns.push(data[props]);
+          i += 1;
+        }
+      }
+      columns.push(id);
+      const sqlQuery =
+        sql + dataUpdate.join(", ") + " WHERE id = $" + i + " RETURNING *";
+
+      db.query(sqlQuery, columns, (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      });
+    });
+  },
 };
