@@ -20,4 +20,16 @@ module.exports = {
       });
     });
   },
+  createUser: (email, password, phone) => {
+    return new Promise((resolve, reject) => {
+      const sql =
+        "INSERT INTO users(email, phone, password) values ($1, $2, $3) RETURNING email, phone";
+      const values = [email, phone, password];
+
+      db.query(sql, values, (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      });
+    });
+  },
 };

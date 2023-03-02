@@ -39,4 +39,27 @@ module.exports = {
       return wrapper.response(res, 500, "Internal Server Error", null);
     }
   },
+  createUser: async (req, res) => {
+    try {
+      const { email, password, phone } = req.body;
+      // const isValid = [];
+
+      if (
+        email === "" ||
+        email === undefined ||
+        password === "" ||
+        password === undefined ||
+        phone === "" ||
+        phone === undefined
+      ) {
+        return wrapper.response(res, 400, "All Inputs should be filled", []);
+      }
+
+      const result = await userModel.createUser(email, password, phone);
+
+      return wrapper.response(res, 201, "Success Create User", result.rows);
+    } catch (error) {
+      return wrapper.response(res, 500, "Internal Server Error", null);
+    }
+  },
 };
