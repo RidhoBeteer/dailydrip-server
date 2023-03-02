@@ -68,4 +68,15 @@ module.exports = {
       });
     });
   },
+  deleteUser: (id) => {
+    return new Promise((resolve, reject) => {
+      const sql = "DELETE FROM users WHERE id = $1 RETURNING *";
+      const values = [id];
+
+      db.query(sql, values, (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      });
+    });
+  },
 };

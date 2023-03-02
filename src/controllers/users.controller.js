@@ -169,4 +169,26 @@ module.exports = {
       return wrapper.response(res, 500, "Internal Server Error", null);
     }
   },
+  deleteUser: async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      const checkId = await userModel.getUser(id);
+
+      if (checkId.rows.length < 1) {
+        return wrapper.response(
+          res,
+          400,
+          "User with provided ID does not exist",
+          []
+        );
+      }
+
+      const result = await userModel.deleteUser(id);
+
+      return wrapper.response(res, 200, "Success Delete User", result.rows);
+    } catch (error) {
+      return wrapper.response(res, 500, "Internal Server Error", null);
+    }
+  },
 };

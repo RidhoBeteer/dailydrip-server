@@ -8,5 +8,6 @@ Router.get("/:id", userController.getUser);
 Router.post("/", userController.createUser);
 Router.patch("/:id", userController.updateUserData);
 Router.patch("/:id/change-password", userController.updateUserPassword);
+Router.delete("/:id", userController.deleteUser);
 
 module.exports = Router;
