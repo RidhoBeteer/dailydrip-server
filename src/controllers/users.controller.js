@@ -6,9 +6,11 @@ module.exports = {
     try {
       let { search, column, orderBy, limit } = req.query;
 
+      search = search || "";
       column = column || "id";
       orderBy = orderBy || "ASC";
       limit = +limit || 5;
+      console.log(search, column, orderBy, limit);
 
       const result = await userModel.getUsers(search, column, orderBy, limit);
 
