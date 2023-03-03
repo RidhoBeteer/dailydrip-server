@@ -1,5 +1,5 @@
 const wrapper = require("../utils/wrapper");
-const userModel = require("../models/user.model");
+const usersModel = require("../models/users.model");
 
 module.exports = {
   getUsers: async (req, res) => {
@@ -12,7 +12,7 @@ module.exports = {
       limit = +limit || 5;
       console.log(search, column, orderBy, limit);
 
-      const result = await userModel.getUsers(search, column, orderBy, limit);
+      const result = await usersModel.getUsers(search, column, orderBy, limit);
 
       if (result.rows.length < 1) {
         return wrapper.response(res, 404, "Data Not Found", []);
@@ -28,7 +28,7 @@ module.exports = {
   getUser: async (req, res) => {
     try {
       const { id } = req.params;
-      const result = await userModel.getUser(id);
+      const result = await usersModel.getUser(id);
 
       if (result.rows.length < 1) {
         return wrapper.response(res, 404, "Data Not Found", []);
@@ -62,7 +62,7 @@ module.exports = {
         );
       }
 
-      const result = await userModel.createUser(email, password, phone);
+      const result = await usersModel.createUser(email, password, phone);
 
       return wrapper.response(res, 201, "Success Create User", result.rows);
     } catch (error) {
@@ -73,7 +73,7 @@ module.exports = {
     try {
       const { id } = req.params;
 
-      const checkId = await userModel.getUser(id);
+      const checkId = await usersModel.getUser(id);
 
       if (checkId.rows.length < 1) {
         return wrapper.response(
@@ -95,7 +95,7 @@ module.exports = {
         );
       }
 
-      const result = await userModel.updateUserData(id, updateObj);
+      const result = await usersModel.updateUserData(id, updateObj);
 
       return wrapper.response(
         res,
@@ -111,7 +111,7 @@ module.exports = {
     try {
       const { id } = req.params;
 
-      const checkId = await userModel.getUser(id);
+      const checkId = await usersModel.getUser(id);
 
       if (checkId.rows.length < 1) {
         return wrapper.response(
@@ -139,7 +139,7 @@ module.exports = {
         );
       }
 
-      const checkOldPassword = await userModel.getUser(id);
+      const checkOldPassword = await usersModel.getUser(id);
 
       if (oldPassword !== checkOldPassword.rows[0].password) {
         return wrapper.response(
@@ -159,7 +159,7 @@ module.exports = {
         );
       }
 
-      const result = await userModel.updateUserPassword(id, newPassword);
+      const result = await usersModel.updateUserPassword(id, newPassword);
 
       return wrapper.response(
         res,
@@ -175,7 +175,7 @@ module.exports = {
     try {
       const { id } = req.params;
 
-      const checkId = await userModel.getUser(id);
+      const checkId = await usersModel.getUser(id);
 
       if (checkId.rows.length < 1) {
         return wrapper.response(
@@ -186,7 +186,7 @@ module.exports = {
         );
       }
 
-      const result = await userModel.deleteUser(id);
+      const result = await usersModel.deleteUser(id);
 
       return wrapper.response(res, 200, "Success Delete User", result.rows);
     } catch (error) {
