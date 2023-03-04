@@ -10,6 +10,17 @@ module.exports = {
       });
     });
   },
+  getPromoDetails: (id) => {
+    return new Promise((resolve, reject) => {
+      const sql = "SELECT * FROM promos WHERE id = $1";
+      const values = [id];
+
+      db.query(sql, values, (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      });
+    });
+  },
   createNewPromo: (data) => {
     return new Promise((resolve, reject) => {
       const sql =

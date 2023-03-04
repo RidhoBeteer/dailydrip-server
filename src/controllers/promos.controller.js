@@ -16,6 +16,31 @@ module.exports = {
       return wrapper.response(res, 500, "Internal Server Error", null);
     }
   },
+  getPromoDetails: async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      if (
+        id.replace(/\s/g, "") === "" ||
+        +id === 1 ||
+        id === undefined ||
+        id == null
+      ) {
+        return wrapper.response(res, 404, "Data Not Found", []);
+      }
+
+      const result = await promosModel.getPromoDetails(id);
+
+      if (result.rows.length < 1) {
+        return wrapper.response(res, 404, "Data Not Found", []);
+      }
+
+      return wrapper.response(res, 200, "Success Get Data", result.rows);
+    } catch (error) {
+      console.log(error);
+      return wrapper.response(res, 500, "Internal Server Error", null);
+    }
+  },
   createNewPromo: async (req, res) => {
     try {
       const { name, description, code, discount, promo_start, promo_end } =
