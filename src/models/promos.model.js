@@ -40,4 +40,29 @@ module.exports = {
       });
     });
   },
+  updatePromo: (id, data) => {
+    return new Promise((resolve, reject) => {
+      const sql = "UPDATE promos set ";
+      const dataUpdate = [];
+      const values = [];
+
+      let i = 1;
+      for (let props in data) {
+        if (data[props] !== "" && data[props] != null) {
+          dataUpdate.push(`${props} = $${i}`);
+          values.push(data[props]);
+          i += 1;
+        }
+      }
+
+      values.push(id);
+      const sqlQuery =
+        sql + dataUpdate.join(", ") + " WHERE id = $" + i + " RETURNING *";
+
+      db.query(sqlQuery, values, (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      });
+    });
+  },
 };

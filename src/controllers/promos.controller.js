@@ -94,4 +94,37 @@ module.exports = {
       return wrapper.response(res, 500, "Internal Server Error", null);
     }
   },
+  updatePromo: async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      const checkId = await promosModel.getPromoDetails(id);
+
+      if (checkId.rows.length < 1) {
+        return wrapper.response(
+          res,
+          404,
+          "Product with provided ID does not exist",
+          []
+        );
+      }
+
+      const payload = { ...req.body };
+
+      if (Object.keys(payload).length < 1) {
+        return wrapper.response(
+          res,
+          400,
+          "Provide at least one data to update",
+          []
+        );
+      }
+
+      const result = await promosModel.updatePromo(id, payload);
+
+      return wrapper.response(res, 200, "Success Update Product", result.rows);
+    } catch (error) {
+      return wrapper.response(res, 500, "Internal Server Error", null);
+    }
+  },
 };
