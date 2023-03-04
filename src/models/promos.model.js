@@ -1,6 +1,15 @@
 const db = require("../configs/postgre");
 
 module.exports = {
+  getPromos: () => {
+    return new Promise((resolve, reject) => {
+      const sql = "SELECT * FROM promos WHERE id <> 1 ORDER BY promo_end DESC";
+      db.query(sql, (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      });
+    });
+  },
   createNewPromo: (data) => {
     return new Promise((resolve, reject) => {
       const sql =
