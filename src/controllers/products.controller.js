@@ -61,6 +61,19 @@ module.exports = {
         result.rows
       );
     } catch (error) {
+      return wrapper.response(res, 500, "Internal Server Error", null);
+    }
+  },
+  deleteProduct: async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      // add id checking later;
+
+      const result = await productsModel.deleteProduct(id);
+
+      return wrapper.response(res, 200, "Success Delete Product", result.rows);
+    } catch (error) {
       console.log(error);
       return wrapper.response(res, 500, "Internal Server Error", null);
     }

@@ -27,4 +27,15 @@ module.exports = {
       });
     });
   },
+  deleteProduct: (id) => {
+    return new Promise((resolve, reject) => {
+      const sql = "DELETE FROM products where id = $1 RETURNING *";
+      const values = [id];
+
+      db.query(sql, values, (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      });
+    });
+  },
 };
