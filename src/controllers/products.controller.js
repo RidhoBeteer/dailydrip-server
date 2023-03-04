@@ -15,6 +15,21 @@ module.exports = {
       return wrapper.response(res, 500, "Internal Server Error", null);
     }
   },
+  getProductDetails: async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      const result = await productsModel.getProductDetails(id);
+
+      if (result.rows.length < 1) {
+        return wrapper.response(res, 404, "Data Not Found", []);
+      }
+
+      return wrapper.response(res, 200, "Success Get Data", result.rows);
+    } catch (error) {
+      return wrapper.response(res, 500, "Internal Server Error", null);
+    }
+  },
   createNewProduct: async (req, res) => {
     try {
       const { name, price, description, stocks, category_id } = req.body;
