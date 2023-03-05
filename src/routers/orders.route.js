@@ -6,5 +6,6 @@ const Router = express.Router();
 Router.get("/", ordersController.getOrdersHistory);
 Router.get("/:id", ordersController.getOrderDetails);
 Router.post("/", ordersController.createOrder);
+Router.delete("/:id", ordersController.deleteOrder);
 
 module.exports = Router;

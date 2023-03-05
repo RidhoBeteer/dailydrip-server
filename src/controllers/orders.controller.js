@@ -93,4 +93,25 @@ module.exports = {
       return wrapper.response(res, 500, "Internal Server Error", null);
     }
   },
+  deleteOrder: async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      if (id === undefined || id.replace(/\s/g, "") === "") {
+        return wrapper.response(res, 400, "Invalid Order ID", []);
+      }
+
+      const checkId = await ordersModel.getOrderById(id);
+
+      if (checkId.rows.length < 1) {
+        return wrapper.response(res, 404, "Data Not Found", []);
+      }
+
+      const result = await ordersModel.deleteOrder(id);
+
+      return wrapper.response(res, 200, "Success Deleting Order", result.rows);
+    } catch (error) {
+      return wrapper.response(res, 500, "Internal Server Error", null);
+    }
+  },
 };

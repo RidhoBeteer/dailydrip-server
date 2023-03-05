@@ -37,4 +37,26 @@ module.exports = {
       });
     });
   },
+  getOrderById: (id) => {
+    return new Promise((resolve, reject) => {
+      const sql = "SELECT * FROM orders where id = $1";
+      const values = [id];
+
+      db.query(sql, values, (error, result) => {
+        if (error) reject(error);
+        resolve(result);
+      });
+    });
+  },
+  deleteOrder: (id) => {
+    return new Promise((resolve, reject) => {
+      const sql = "DELETE FROM orders WHERE id = $1 RETURNING *";
+      const values = [id];
+
+      db.query(sql, values, (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      });
+    });
+  },
 };
