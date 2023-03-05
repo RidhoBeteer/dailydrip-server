@@ -63,4 +63,34 @@ module.exports = {
       return wrapper.response(res, 500, "Internal Server Erro", null);
     }
   },
+  getOrderDetails: async (req, res) => {
+    try {
+      const { id: order_id } = req.params;
+      const { user_id } = req.headers;
+
+      if (user_id === undefined || user_id.replace(/\s/g, "") === "") {
+        return wrapper.response(
+          res,
+          403,
+          "Error, Make sure you're logged in!",
+          []
+        );
+      }
+
+      if (order_id === undefined || order_id.replace(/\s/g, "") === "") {
+        return wrapper.response(res, 403, "Error, Invalid Order ID", []);
+      }
+
+      const result = await ordersModel.getOrderDetails(user_id, order_id);
+
+      if (result.rows.length < 1) {
+        return wrapper.response(res, 404, "Data Not Found", []);
+      }
+
+      return wrapper.response(res, 200, "Success Get Order Data", result.rows);
+    } catch (error) {
+      console.log(error);
+      return wrapper.response(res, 500, "Internal Server Error", null);
+    }
+  },
 };

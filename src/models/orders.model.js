@@ -25,4 +25,16 @@ module.exports = {
       });
     });
   },
+  getOrderDetails: (userId, orderId) => {
+    return new Promise((resolve, reject) => {
+      const sql =
+        "select o.id as order_id, o.user_id, o.status, o.ordered_at, o.product_id, p.name as product_name, p.price from orders o join products p on p.id = o.product_id where o.id = $1 and o.user_id = $2;";
+      const values = [orderId, userId];
+
+      db.query(sql, values, (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      });
+    });
+  },
 };
