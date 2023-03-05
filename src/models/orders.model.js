@@ -8,7 +8,19 @@ module.exports = {
       const values = [data.user_id, data.product_id];
 
       db.query(sql, values, (error, result) => {
-        if (error) return rejec(error);
+        if (error) return reject(error);
+        resolve(result);
+      });
+    });
+  },
+  getOrdersHistory: (userId) => {
+    return new Promise((resolve, reject) => {
+      const sql =
+        "select o.id, u.display_name as user_name, p.name as product_name, p.price, o.status, o.ordered_at from users u join orders o on o.user_id = u.id join products p on o.product_id = p.id WHERE u.id = $1";
+      const values = [userId];
+
+      db.query(sql, values, (error, result) => {
+        if (error) return reject(error);
         resolve(result);
       });
     });
