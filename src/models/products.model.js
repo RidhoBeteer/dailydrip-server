@@ -1,9 +1,27 @@
 const db = require("../configs/postgre");
 
 module.exports = {
-  getProducts: () => {
+  getProducts: (query) => {
     return new Promise((resolve, reject) => {
-      db.query("SELECT * FROM products LIMIT 5", (error, result) => {
+      const sql = `select p.id as product_id, p."name" as product_name, p.description, p.price, p.stocks, c."name" as category from products p join categories c on c.id = p.category_id `;
+      let conditions = `where lower(p."name") like '%' || $1 || '%' `;
+      const values = [query.search];
+
+      if (
+        query.category !== undefined &&
+        query.category.replace(/\s/g, "") !== ""
+      ) {
+        conditions += `and lower(c."name") like $2 `;
+        values.push(query.category);
+      }
+
+      const orders = `order by ${query.column} ${query.order} `;
+      const limits = `limit ${query.limit}`;
+
+      const fullQuery = sql + conditions + orders + limits;
+      // console.log(fullQuery);
+      // console.log(values);
+      db.query(fullQuery, values, (error, result) => {
         if (error) return reject(error);
         resolve(result);
       });
