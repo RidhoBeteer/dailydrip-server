@@ -1,5 +1,7 @@
 const wrapper = require("../utils/wrapper");
 const ordersModel = require("../models/orders.model");
+const usersModel = require("../models/users.model");
+const productsModel = require("../models/products.model");
 
 module.exports = {
   createOrder: async (req, res) => {
@@ -22,6 +24,28 @@ module.exports = {
         );
       }
 
+      const checkUserId = await usersModel.getUser(user_id);
+
+      if (checkUserId.rows.length < 1) {
+        return wrapper.response(
+          res,
+          404,
+          "Error, There's no user with provided ID",
+          []
+        );
+      }
+
+      const checkProductId = await productsModel.getProductDetails(product_id);
+
+      if (checkProductId.rows.length < 1) {
+        return wrapper.response(
+          res,
+          404,
+          "Error, There's no product with provided ID",
+          []
+        );
+      }
+
       const payload = {
         user_id,
         product_id,
@@ -31,6 +55,7 @@ module.exports = {
 
       return wrapper.response(res, 201, "Success Creating Order", result.rows);
     } catch (error) {
+      console.log(error);
       return wrapper.response(res, 500, "Internal Server Error", null);
     }
   },
