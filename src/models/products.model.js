@@ -19,8 +19,7 @@ module.exports = {
       const limits = `limit ${query.limit}`;
 
       const fullQuery = sql + conditions + orders + limits;
-      // console.log(fullQuery);
-      // console.log(values);
+
       db.query(fullQuery, values, (error, result) => {
         if (error) return reject(error);
         resolve(result);
