@@ -139,4 +139,87 @@ module.exports = {
       return wrapper.response(res, 500, "Internal Server Error", null);
     }
   },
+  updateOrder: async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      const checkOrderId = await ordersModel.getOrderById(id);
+
+      if (checkOrderId.rows.length < 1) {
+        return wrapper.response(res, 404, "Data Not Found", []);
+      }
+
+      const reqData = { ...req.body };
+
+      if (Object.keys(reqData).length < 1) {
+        return wrapper.response(
+          res,
+          400,
+          "Provide at least one data to update",
+          []
+        );
+      }
+
+      if (reqData.user_id !== undefined) {
+        if (reqData.user_id.replace(/\s/g, "") === "") {
+          return wrapper.response(res, 400, "Invalid User ID Type", []);
+        }
+
+        const checkUserId = await usersModel.getUser(reqData.user_id);
+
+        if (checkUserId.rows.length < 1) {
+          return wrapper.response(
+            res,
+            400,
+            "There's no user with provided ID",
+            []
+          );
+        }
+      }
+
+      if (reqData.product_id !== undefined) {
+        if (reqData.product_id.replace(/\s/g, "") === "") {
+          return wrapper.response(res, 400, "Invalid Product ID Type", []);
+        }
+
+        const checkProductId = await productsModel.getProductDetails(
+          reqData.product_id
+        );
+
+        if (checkProductId.rows.length < 1) {
+          return wrapper.response(
+            res,
+            400,
+            "There's no Product with provided ID",
+            []
+          );
+        }
+      }
+
+      if (reqData.status !== undefined) {
+        if (reqData.status.replace(/\s/g, "") === "") {
+          return wrapper.response(
+            res,
+            400,
+            "Make sure 'status' input is not an empty string",
+            []
+          );
+        }
+      }
+
+      const currDate = new Date();
+
+      const result = await ordersModel.updateOrder(id, reqData, currDate);
+
+      return wrapper.response(
+        res,
+        200,
+        "Success Updating Order History Data",
+        result.rows
+      );
+    } catch (error) {
+      console.log(error);
+      return wrapper.response(res, 500, "Internal Server Error", null);
+    }
+  },
 };

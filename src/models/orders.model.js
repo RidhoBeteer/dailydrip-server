@@ -59,4 +59,38 @@ module.exports = {
       });
     });
   },
+  updateOrder: (id, data, updated_at) => {
+    return new Promise((resolve, reject) => {
+      const sql = "update orders set ";
+      const dataUpdate = [];
+      const values = [];
+
+      let i = 1;
+      for (let props in data) {
+        if (data[props] !== "" && data[props] != null) {
+          dataUpdate.push(`${props} = $${i}`);
+          values.push(data[props]);
+          i += 1;
+        }
+      }
+
+      const dateQuery = `, updated_at = $${i}`;
+
+      values.push(updated_at, id);
+      i += 1;
+
+      const sqlQuery =
+        sql +
+        dataUpdate.join(", ") +
+        dateQuery +
+        " WHERE id = $" +
+        i +
+        " RETURNING *";
+
+      db.query(sqlQuery, values, (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      });
+    });
+  },
 };
