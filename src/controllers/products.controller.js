@@ -89,7 +89,7 @@ module.exports = {
         return wrapper.response(
           res,
           400,
-          "All input fields should not be empty",
+          "All input fields should be filled",
           []
         );
       }
