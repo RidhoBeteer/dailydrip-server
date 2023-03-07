@@ -12,7 +12,13 @@ module.exports = {
       limit = limit ? Math.abs(+limit) : 5;
       category = category || "";
 
-      const filters = { search, column, order, limit, category };
+      const filters = {
+        search,
+        column,
+        order,
+        limit,
+        category,
+      };
 
       switch (filters.column) {
         case "name":
