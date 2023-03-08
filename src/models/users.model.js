@@ -1,10 +1,11 @@
 const db = require("../configs/postgre");
 
 module.exports = {
-  getUsers: (search, column, orderBy, limit) => {
+  getUsers: () => {
     return new Promise((resolve, reject) => {
       // const sql = `SELECT * FROM users where lower(display_name) like '%${search}%' ORDER BY ${column} ${orderBy} LIMIT ${limit}`;
-      const sql = `SELECT * FROM users WHERE role_id = 2 ORDER BY ${column} ${orderBy} LIMIT ${limit}`;
+      const sql = `SELECT * FROM users WHERE role_id = 2 LIMIT 5`;
+
       db.query(sql, (error, result) => {
         if (error) return reject(error);
         resolve(result);
@@ -24,7 +25,7 @@ module.exports = {
   createUser: (email, password, phone) => {
     return new Promise((resolve, reject) => {
       const sql =
-        "INSERT INTO users(email, phone, password) values ($1, $2, $3) RETURNING email, phone";
+        "INSERT INTO users(email, phone, password) values ($1, $2, $3) RETURNING id, email, phone";
       const values = [email, phone, password];
 
       db.query(sql, values, (error, result) => {

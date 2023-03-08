@@ -4,15 +4,15 @@ const usersModel = require("../models/users.model");
 module.exports = {
   getUsers: async (req, res) => {
     try {
-      let { search, column, orderBy, limit } = req.query;
+      // let { search, column, orderBy, limit } = req.query;
 
-      search = search || "";
-      column = column || "id";
-      orderBy = orderBy || "ASC";
-      limit = +limit || 5;
-      console.log(search, column, orderBy, limit);
+      // search = search || "";
+      // column = column || "id";
+      // orderBy = orderBy || "ASC";
+      // limit = +limit || 5;
+      // console.log(search, column, orderBy, limit);
 
-      const result = await usersModel.getUsers(search, column, orderBy, limit);
+      const result = await usersModel.getUsers();
 
       if (result.rows.length < 1) {
         return wrapper.response(res, 404, "Data Not Found", []);
@@ -28,15 +28,18 @@ module.exports = {
   getUser: async (req, res) => {
     try {
       const { id } = req.params;
+
+      if (id === undefined || id === ":id") {
+        return wrapper.response(res, 400, "Invalid User ID", []);
+      }
+
       const result = await usersModel.getUser(id);
 
       if (result.rows.length < 1) {
         return wrapper.response(res, 404, "Data Not Found", []);
       }
 
-      const data = result.rows;
-
-      return wrapper.response(res, 200, "Success Get Data", data);
+      return wrapper.response(res, 200, "Success Get Data", result.rows);
     } catch (error) {
       return wrapper.response(res, 500, "Internal Server Error", null);
     }
@@ -73,12 +76,16 @@ module.exports = {
     try {
       const { id } = req.params;
 
+      if (id === undefined || id === ":id") {
+        return wrapper.response(res, 400, "Invalid User ID", []);
+      }
+
       const checkId = await usersModel.getUser(id);
 
       if (checkId.rows.length < 1) {
         return wrapper.response(
           res,
-          400,
+          404,
           "User with provided ID does not exist",
           []
         );
@@ -110,6 +117,10 @@ module.exports = {
   updateUserPassword: async (req, res) => {
     try {
       const { id } = req.params;
+
+      if (id === undefined || id === ":id") {
+        return wrapper.response(res, 400, "Invalid User ID", []);
+      }
 
       const checkId = await usersModel.getUser(id);
 
@@ -175,12 +186,16 @@ module.exports = {
     try {
       const { id } = req.params;
 
+      if (id === undefined || id === ":id") {
+        return wrapper.response(res, 400, "Invalid User ID", []);
+      }
+
       const checkId = await usersModel.getUser(id);
 
       if (checkId.rows.length < 1) {
         return wrapper.response(
           res,
-          400,
+          404,
           "User with provided ID does not exist",
           []
         );

@@ -21,7 +21,6 @@ module.exports = {
       };
 
       switch (filters.column) {
-        case "name":
         case "price":
         case "stocks":
         case "category":
@@ -123,6 +122,10 @@ module.exports = {
   updateProduct: async (req, res) => {
     try {
       const { id } = req.params;
+
+      if (id === undefined || id === ":id") {
+        return wrapper.response(res, 400, "Invalid Product Id", []);
+      }
 
       const checkId = await productsModel.getProductDetails(id);
 
