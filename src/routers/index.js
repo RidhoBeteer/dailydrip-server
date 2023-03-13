@@ -1,4 +1,5 @@
 const express = require("express");
+const authMiddleware = require("../middlewares/auth");
 
 const authRouter = require("./auth.route");
 
@@ -10,7 +11,7 @@ const ordersRouter = require("./orders.route");
 const Router = express.Router();
 
 Router.use("/users", usersRouter);
-Router.use("/products", productsRouter);
+Router.use("/products", authMiddleware.authentication, productsRouter);
 Router.use("/promos", promosRouter);
 Router.use("/histories", ordersRouter);
 Router.use("/auth", authRouter);
