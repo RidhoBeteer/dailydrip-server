@@ -10,10 +10,10 @@ const ordersRouter = require("./orders.route");
 
 const Router = express.Router();
 
-Router.use("/users", usersRouter);
-Router.use("/products", authMiddleware.authentication, productsRouter);
+Router.use("/users", authMiddleware.authentication, usersRouter);
+Router.use("/products", productsRouter);
 Router.use("/promos", promosRouter);
-Router.use("/histories", ordersRouter);
+Router.use("/histories", authMiddleware.authentication, ordersRouter);
 Router.use("/auth", authRouter);
 
 module.exports = Router;
